@@ -12,7 +12,11 @@ import {
 
     signOut,
 
-    onAuthStateChanged
+    onAuthStateChanged,
+
+    browserLocalPersistence,
+
+    setPersistence
 
 }
 from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
@@ -38,20 +42,31 @@ const logoutBtn =
         "logoutBtn"
     );
 
-loginBtn.addEventListener(
-    "click",
-    login
-);
+if(loginBtn)
+{
+    loginBtn.addEventListener(
+        "click",
+        login
+    );
+}
 
-logoutBtn.addEventListener(
-    "click",
-    logout
-);
+if(logoutBtn)
+{
+    logoutBtn.addEventListener(
+        "click",
+        logout
+    );
+}
 
 async function login()
 {
     try
     {
+        await setPersistence(
+            auth,
+            browserLocalPersistence
+        );
+
         const provider =
             new GoogleAuthProvider();
 
@@ -71,6 +86,9 @@ async function login()
         console.log(
             "LOGIN SUCCESS"
         );
+
+        location.href =
+            "dashboard.html";
     }
     catch(error)
     {
@@ -84,7 +102,17 @@ async function login()
 
 async function logout()
 {
-    await signOut(auth);
+    try
+    {
+        await signOut(auth);
+
+        location.href =
+            "index.html";
+    }
+    catch(error)
+    {
+        console.error(error);
+    }
 }
 
 async function createUser(user)
@@ -98,90 +126,162 @@ async function createUser(user)
     const snapshot =
         await get(userRef);
 
-    if(!snapshot.exists())
+    if(snapshot.exists())
     {
-        await set(
-            userRef,
-            {
-                uid:
-                    user.uid,
-
-                displayName:
-                    user.displayName,
-
-                email:
-                    user.email,
-
-                photoURL:
-                    user.photoURL,
-
-                createdAt:
-                    Date.now()
-            }
-        );
-
-        console.log(
-            "CREATE USER SUCCESS"
-        );
+        return;
     }
+
+    let role = "user";
+
+    if(
+        user.email ===
+        "rtiix8@gmail.com"
+    )
+    {
+        role = "admin";
+    }
+
+    await set(
+        userRef,
+        {
+            uid:
+                user.uid,
+
+            displayName:
+                user.displayName,
+
+            email:
+                user.email,
+
+            photoURL:
+                user.photoURL,
+
+            role:
+                role,
+
+            gold:
+                1000,
+
+            createdAt:
+                Date.now()
+        }
+    );
+
+    console.log(
+        "CREATE USER SUCCESS"
+    );
 }
 
 onAuthStateChanged(
     auth,
-    (user)=>
+    async(user)=>
     {
         if(user)
         {
-            document
-                .getElementById(
+            const snapshot =
+                await get(
+                    ref(
+                        db,
+                        "users/" +
+                        user.uid
+                    )
+                );
+
+            const profile =
+                snapshot.val();
+
+            const guest =
+                document.getElementById(
                     "guest"
-                )
-                .style.display =
-                "none";
+                );
 
-            document
-                .getElementById(
+            const member =
+                document.getElementById(
                     "member"
-                )
-                .style.display =
-                "block";
+                );
 
-            document
-                .getElementById(
+            if(guest)
+            {
+                guest.style.display =
+                    "none";
+            }
+
+            if(member)
+            {
+                member.style.display =
+                    "block";
+            }
+
+            const avatar =
+                document.getElementById(
                     "avatar"
-                )
-                .src =
-                user.photoURL;
+                );
 
-            document
-                .getElementById(
+            const displayName =
+                document.getElementById(
                     "displayName"
-                )
-                .innerText =
-                user.displayName;
+                );
 
-            document
-                .getElementById(
+            const email =
+                document.getElementById(
                     "email"
-                )
-                .innerText =
-                user.email;
+                );
+
+            const role =
+                document.getElementById(
+                    "role"
+                );
+
+            if(avatar)
+            {
+                avatar.src =
+                    user.photoURL;
+            }
+
+            if(displayName)
+            {
+                displayName.innerText =
+                    user.displayName;
+            }
+
+            if(email)
+            {
+                email.innerText =
+                    user.email;
+            }
+
+            if(role)
+            {
+                role.innerText =
+                    profile.role;
+            }
         }
         else
         {
-            document
-                .getElementById(
+            const guest =
+                document.getElementById(
                     "guest"
-                )
-                .style.display =
-                "block";
+                );
 
-            document
-                .getElementById(
+            const member =
+                document.getElementById(
                     "member"
-                )
-                .style.display =
-                "none";
+                );
+
+            if(guest)
+            {
+                guest.style.display =
+                    "block";
+            }
+
+            if(member)
+            {
+                member.style.display =
+                    "none";
+            }
         }
     }
 );
+
+window.logout =
+    logout;

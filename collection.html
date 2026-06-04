@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+
+<meta charset="UTF-8">
+
+<title>My Collection</title>
+
+<style>
+
+body{
+    font-family:Arial;
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(250px,1fr)
+        );
+    gap:10px;
+}
+
+.card{
+    border:1px solid #ddd;
+    padding:10px;
+    border-radius:8px;
+}
+
+.selected{
+    border:3px solid green;
+}
+
+</style>
+
+</head>
+<body>
+
+<h1>My Collection</h1>
+
+<p>
+
+Selected :
+<span id="selectedCount">
+0
+</span>
+/ 3
+
+</p>
+
+<button id="saveDeckBtn">
+Save Deck
+</button>
+
+<hr>
+
+<div
+    id="collection"
+    class="grid">
+</div>
+
+<script
+type="module"
+src="js/collection.js">
+</script>
+
+</body>
+</html>

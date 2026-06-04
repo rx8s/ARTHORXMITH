@@ -1,17 +1,33 @@
 <!DOCTYPE html>
+
 <html lang="th">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>ARTHORXMITH</title>
 
 <style>
 
 body{
-    font-family:Arial;
+    font-family:Arial, sans-serif;
+    background:#f5f5f5;
     text-align:center;
-    padding-top:50px;
+    margin:0;
+    padding:30px;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+}
+
+.card{
+    background:#fff;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 0 10px rgba(0,0,0,.1);
 }
 
 img{
@@ -21,6 +37,25 @@ img{
 button{
     padding:10px 20px;
     cursor:pointer;
+    border:none;
+    border-radius:8px;
+}
+
+.menu{
+    margin-top:20px;
+}
+
+.menu a{
+    display:block;
+    margin:10px 0;
+    text-decoration:none;
+    padding:10px;
+    background:#eee;
+    border-radius:8px;
+}
+
+.menu a:hover{
+    background:#ddd;
 }
 
 </style>
@@ -28,31 +63,63 @@ button{
 </head>
 <body>
 
-<h1>ARTHORXMITH</h1>
+<div class="container">
 
-<div id="guest">
+```
+<div class="card">
 
-    <button id="loginBtn">
-        Login with Google
-    </button>
+    <h1>ARTHORXMITH</h1>
+
+    <!-- Guest -->
+
+    <div id="guest">
+
+        <p>
+            กรุณาเข้าสู่ระบบ
+        </p>
+
+        <button id="loginBtn">
+            Login with Google
+        </button>
+
+    </div>
+
+    <!-- Member -->
+
+    <div id="member" style="display:none;">
+
+        <img
+            id="avatar"
+            src=""
+            width="120"
+            height="120">
+
+        <h2 id="displayName"></h2>
+
+        <p id="email"></p>
+
+        <p>
+            Role :
+            <span id="role"></span>
+        </p>
+
+        <hr>
+
+        <div
+            id="menu"
+            class="menu">
+        </div>
+
+        <hr>
+
+        <button id="logoutBtn">
+            Logout
+        </button>
+
+    </div>
 
 </div>
-
-<div id="member" style="display:none;">
-
-    <img
-        id="avatar"
-        width="100"
-        height="100"
-    >
-
-    <h2 id="displayName"></h2>
-
-    <p id="email"></p>
-
-    <button id="logoutBtn">
-        Logout
-    </button>
+```
 
 </div>
 
