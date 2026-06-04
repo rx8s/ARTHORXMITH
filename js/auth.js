@@ -1,46 +1,60 @@
-import { auth } from "./firebase.js";
-import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
-import { createUser } from "./firestore.js";
+import { auth, db } from "./firebase.js";
 
-const provider = new GoogleAuthProvider();
+import {
+    onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
-window.login = async () =>
-{
-    try
-    {
-        const result =
-            await signInWithPopup(
-                auth,
-                provider
-            );
-
-        await createUser(
-            result.user
-        );
-    }
-    catch(error)
-    {
-        console.error(error);
-    }
-};
-
-window.logout = async () =>
-{
-    await signOut(auth);
-};
+import {
+    ref,
+    onValue
+}
+from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
 
 onAuthStateChanged(
     auth,
     (user)=>
     {
-        if(user)
+        if(!user)
         {
-            document
-            .getElementById(
-                "playerName"
-            )
-            .innerText =
-                user.displayName;
+            return;
         }
+
+        // แสดงชื่อ
+        document.getElementById(
+            "playerName"
+        ).innerText =
+            user.displayName;
+
+        // Realtime User Data
+        const userRef =
+            ref(
+                db,
+                "users/" + user.uid
+            );
+
+        onValue(
+            userRef,
+            (snapshot)=>
+            {
+                const player =
+                    snapshot.val();
+
+                if(!player)
+                {
+                    return;
+                }
+
+                document.getElementById(
+                    "gold"
+                ).innerText =
+                    player.gold;
+
+                document.getElementById(
+                    "level"
+                ).innerText =
+                    player.level;
+            }
+        );
     }
 );
