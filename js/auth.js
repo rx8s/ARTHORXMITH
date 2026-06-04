@@ -1,148 +1,222 @@
 import {
-    auth,
-    db
+auth,
+db
 }
 from "./firebase.js";
 
 import {
 
-    GoogleAuthProvider,
 
-    signInWithPopup,
+GoogleAuthProvider,
 
-    signOut,
+signInWithPopup,
 
-    onAuthStateChanged,
+signOut,
 
-    browserLocalPersistence,
+onAuthStateChanged,
 
-    setPersistence
+browserLocalPersistence,
+
+setPersistence
+
 
 }
 from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
 import {
 
-    ref,
 
-    get,
+ref,
 
-    set
+get,
+
+set
+
 
 }
 from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
 
 const loginBtn =
-    document.getElementById(
-        "loginBtn"
-    );
+document.getElementById(
+"loginBtn"
+);
 
 const logoutBtn =
-    document.getElementById(
-        "logoutBtn"
-    );
+document.getElementById(
+"logoutBtn"
+);
 
 if(loginBtn)
 {
-    loginBtn.addEventListener(
-        "click",
-        login
-    );
+loginBtn.addEventListener(
+"click",
+login
+);
 }
 
 if(logoutBtn)
 {
-    logoutBtn.addEventListener(
-        "click",
-        logout
-    );
+logoutBtn.addEventListener(
+"click",
+logout
+);
 }
 
 async function login()
 {
-    try
-    {
-        await setPersistence(
+try
+{
+await setPersistence(
+auth,
+browserLocalPersistence
+);
+
+
+    const provider =
+        new GoogleAuthProvider();
+
+    const result =
+        await signInWithPopup(
             auth,
-            browserLocalPersistence
+            provider
         );
 
-        const provider =
-            new GoogleAuthProvider();
+    const user =
+        result.user;
 
-        const result =
-            await signInWithPopup(
-                auth,
-                provider
-            );
+    await createUser(
+        user
+    );
 
-        const user =
-            result.user;
+    console.log(
+        "LOGIN SUCCESS"
+    );
 
-        await createUser(
-            user
-        );
+    location.href =
+        "dashboard.html";
+}
+catch(error)
+{
+    console.error(error);
 
-        console.log(
-            "LOGIN SUCCESS"
-        );
+    alert(
+        error.message
+    );
+}
 
-        location.href =
-            "dashboard.html";
-    }
-    catch(error)
-    {
-        console.error(error);
 
-        alert(
-            error.message
-        );
-    }
 }
 
 async function logout()
 {
-    try
-    {
-        await signOut(auth);
+try
+{
+await signOut(auth);
 
-        location.href =
-            "index.html";
-    }
-    catch(error)
-    {
-        console.error(error);
-    }
+
+    location.href =
+        "index.html";
+}
+catch(error)
+{
+    console.error(error);
+}
+
+
 }
 
 async function createUser(user)
 {
-    const userRef =
-        ref(
-            db,
-            "users/" + user.uid
-        );
+const userRef =
+ref(
+db,
+"users/" +
+user.uid
+);
 
-    const snapshot =
-        await get(userRef);
 
-    if(snapshot.exists())
+const snapshot =
+    await get(
+        userRef
+    );
+
+if(snapshot.exists())
+{
+    return;
+}
+
+let role = "user";
+
+if(
+    user.email ===
+    "rtiix8@gmail.com"
+)
+{
+    role = "admin";
+}
+
+await set(
+    userRef,
     {
-        return;
+        uid:
+            user.uid,
+
+        displayName:
+            user.displayName,
+
+        email:
+            user.email,
+
+        photoURL:
+            user.photoURL,
+
+        role:
+            role,
+
+        gold:
+            1000,
+
+        diamond:
+            100,
+
+        level:
+            1,
+
+        exp:
+            0,
+
+        createdAt:
+            Date.now()
     }
+);
 
-    let role = "user";
+console.log(
+    "CREATE USER SUCCESS"
+);
 
-    if(
-        user.email ===
-        "rtiix8@gmail.com"
-    )
-    {
-        role = "admin";
-    }
 
-    await set(
-        userRef,
+}
+
+onAuthStateChanged(
+auth,
+async(user)=>
+{
+if(user)
+{
+const snapshot =
+await get(
+ref(
+db,
+"users/" +
+user.uid
+)
+);
+
+
+        const profile =
+            snapshot.val();
+
+        window.currentUser =
         {
             uid:
                 user.uid,
@@ -157,131 +231,183 @@ async function createUser(user)
                 user.photoURL,
 
             role:
-                role,
+                profile.role
+        };
 
-            gold:
-                1000,
-
-            createdAt:
-                Date.now()
-        }
-    );
-
-    console.log(
-        "CREATE USER SUCCESS"
-    );
-}
-
-onAuthStateChanged(
-    auth,
-    async(user)=>
-    {
-        if(user)
+        if(
+            location.pathname.endsWith(
+                "index.html"
+            )
+        )
         {
-            const snapshot =
-                await get(
-                    ref(
-                        db,
-                        "users/" +
-                        user.uid
-                    )
-                );
+            location.href =
+                "dashboard.html";
 
-            const profile =
-                snapshot.val();
-
-            const guest =
-                document.getElementById(
-                    "guest"
-                );
-
-            const member =
-                document.getElementById(
-                    "member"
-                );
-
-            if(guest)
-            {
-                guest.style.display =
-                    "none";
-            }
-
-            if(member)
-            {
-                member.style.display =
-                    "block";
-            }
-
-            const avatar =
-                document.getElementById(
-                    "avatar"
-                );
-
-            const displayName =
-                document.getElementById(
-                    "displayName"
-                );
-
-            const email =
-                document.getElementById(
-                    "email"
-                );
-
-            const role =
-                document.getElementById(
-                    "role"
-                );
-
-            if(avatar)
-            {
-                avatar.src =
-                    user.photoURL;
-            }
-
-            if(displayName)
-            {
-                displayName.innerText =
-                    user.displayName;
-            }
-
-            if(email)
-            {
-                email.innerText =
-                    user.email;
-            }
-
-            if(role)
-            {
-                role.innerText =
-                    profile.role;
-            }
+            return;
         }
-        else
+
+        const guest =
+            document.getElementById(
+                "guest"
+            );
+
+        const member =
+            document.getElementById(
+                "member"
+            );
+
+        if(guest)
         {
-            const guest =
-                document.getElementById(
-                    "guest"
-                );
+            guest.style.display =
+                "none";
+        }
 
-            const member =
-                document.getElementById(
-                    "member"
-                );
+        if(member)
+        {
+            member.style.display =
+                "block";
+        }
 
-            if(guest)
+        const avatar =
+            document.getElementById(
+                "avatar"
+            );
+
+        const displayName =
+            document.getElementById(
+                "displayName"
+            );
+
+        const email =
+            document.getElementById(
+                "email"
+            );
+
+        const role =
+            document.getElementById(
+                "role"
+            );
+
+        if(avatar)
+        {
+            avatar.src =
+                user.photoURL;
+        }
+
+        if(displayName)
+        {
+            displayName.innerText =
+                user.displayName;
+        }
+
+        if(email)
+        {
+            email.innerText =
+                user.email;
+        }
+
+        if(role)
+        {
+            role.innerText =
+                profile.role;
+        }
+
+        const menu =
+            document.getElementById(
+                "menu"
+            );
+
+        if(menu)
+        {
+            if(
+                profile.role ===
+                "admin"
+            )
             {
-                guest.style.display =
-                    "block";
+                menu.innerHTML = `
+
+                    <a href="monster-admin.html">
+                        🐲 เพิ่ม Monster
+                    </a>
+
+                    <a href="collection.html">
+                        🎒 Monster ของฉัน
+                    </a>
+
+                    <a href="deck.html">
+                        🃏 My Deck
+                    </a>
+
+                    <a href="battle.html">
+                        ⚔️ Battle
+                    </a>
+
+                `;
             }
-
-            if(member)
+            else
             {
-                member.style.display =
-                    "none";
+                menu.innerHTML = `
+
+                    <a href="gacha.html">
+                        🎲 สุ่ม Monster
+                    </a>
+
+                    <a href="collection.html">
+                        🎒 Monster ของฉัน
+                    </a>
+
+                    <a href="deck.html">
+                        🃏 My Deck
+                    </a>
+
+                    <a href="battle.html">
+                        ⚔️ Battle
+                    </a>
+
+                `;
             }
         }
     }
+    else
+    {
+        const guest =
+            document.getElementById(
+                "guest"
+            );
+
+        const member =
+            document.getElementById(
+                "member"
+            );
+
+        if(
+            !location.pathname.endsWith(
+                "index.html"
+            )
+        )
+        {
+            location.href =
+                "index.html";
+
+            return;
+        }
+
+        if(guest)
+        {
+            guest.style.display =
+                "block";
+        }
+
+        if(member)
+        {
+            member.style.display =
+                "none";
+        }
+    }
+}
+
+
 );
 
 window.logout =
-    logout;
+logout;
