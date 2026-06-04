@@ -88,16 +88,37 @@ browserLocalPersistence
         user
     );
 
-    console.log(
-        "LOGIN SUCCESS"
-    );
+    const snapshot =
+        await get(
+            ref(
+                db,
+                "users/" +
+                user.uid
+            )
+        );
 
-    location.href =
-        "dashboard.html";
+    const profile =
+        snapshot.val();
+
+    if(
+        profile.role ===
+        "admin"
+    )
+    {
+        location.href =
+            "admin.html";
+    }
+    else
+    {
+        location.href =
+            "dashboard.html";
+    }
 }
 catch(error)
 {
-    console.error(error);
+    console.error(
+        error
+    );
 
     alert(
         error.message
@@ -111,7 +132,9 @@ async function logout()
 {
 try
 {
-await signOut(auth);
+await signOut(
+auth
+);
 
 
     location.href =
@@ -119,7 +142,9 @@ await signOut(auth);
 }
 catch(error)
 {
-    console.error(error);
+    console.error(
+        error
+    );
 }
 
 
@@ -140,19 +165,39 @@ const snapshot =
         userRef
     );
 
-if(snapshot.exists())
-{
-    return;
-}
-
-let role = "user";
+let role =
+    "user";
 
 if(
     user.email ===
     "rtiix8@gmail.com"
 )
 {
-    role = "admin";
+    role =
+        "admin";
+}
+
+if(snapshot.exists())
+{
+    const oldData =
+        snapshot.val();
+
+    if(
+        oldData.role !==
+        role
+    )
+    {
+        await set(
+            userRef,
+            {
+                ...oldData,
+                role:
+                    role
+            }
+        );
+    }
+
+    return;
 }
 
 await set(
@@ -188,10 +233,6 @@ await set(
         createdAt:
             Date.now()
     }
-);
-
-console.log(
-    "CREATE USER SUCCESS"
 );
 
 
@@ -240,8 +281,19 @@ user.uid
             )
         )
         {
-            location.href =
-                "dashboard.html";
+            if(
+                profile.role ===
+                "admin"
+            )
+            {
+                location.href =
+                    "admin.html";
+            }
+            else
+            {
+                location.href =
+                    "dashboard.html";
+            }
 
             return;
         }
@@ -326,12 +378,16 @@ user.uid
             {
                 menu.innerHTML = `
 
+                    <a href="admin.html">
+                        🛠️ Admin Panel
+                    </a>
+
                     <a href="monster-admin.html">
-                        🐲 เพิ่ม Monster
+                        🐲 Monster Manager
                     </a>
 
                     <a href="collection.html">
-                        🎒 Monster ของฉัน
+                        🎒 Collection
                     </a>
 
                     <a href="deck.html">
@@ -349,11 +405,11 @@ user.uid
                 menu.innerHTML = `
 
                     <a href="gacha.html">
-                        🎲 สุ่ม Monster
+                        🎲 Gacha
                     </a>
 
                     <a href="collection.html">
-                        🎒 Monster ของฉัน
+                        🎒 Collection
                     </a>
 
                     <a href="deck.html">

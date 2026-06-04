@@ -7,8 +7,7 @@ from "./firebase.js";
 import {
     onAuthStateChanged
 }
-from
-"https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
 import {
 
@@ -16,316 +15,276 @@ import {
 
     get,
 
+    push,
+
     set
 
 }
-from
-"https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
 
-const collectionDiv =
+const cards =
     document.getElementById(
-        "collection"
+        "cards"
     );
 
-const selectedCount =
-    document.getElementById(
-        "selectedCount"
-    );
-
-const saveDeckBtn =
-    document.getElementById(
-        "saveDeckBtn"
-    );
-
-let selectedDeck = [];
-
-let allMonsters = {};
+let currentUser =
+    null;
 
 onAuthStateChanged(
     auth,
-    async(user)=>
+    (user)=>
     {
         if(!user)
         {
-            alert(
-                "Please Login"
-            );
+            location.href =
+                "index.html";
 
             return;
         }
 
-        await initializeCollection(
-            user.uid
-        );
+        currentUser =
+            user;
 
-        loadCollection(
-            user.uid
-        );
+        loadCollection();
     }
 );
 
-async function initializeCollection(uid)
+async function loadCollection()
 {
-    const collectionRef =
-        ref(
-            db,
-            "users/" +
-            uid +
-            "/collection"
-        );
-
-    const collectionSnap =
-        await get(
-            collectionRef
-        );
-
-    if(
-        collectionSnap.exists()
-    )
-    {
-        return;
-    }
-
-    const monstersSnap =
+    const snapshot =
         await get(
             ref(
                 db,
-                "monsters"
+                "collections/" +
+                currentUser.uid
             )
         );
 
-    const monsters =
-        monstersSnap.val();
+    const data =
+        snapshot.val();
 
-    const ids =
-        Object.keys(
-            monsters
-        );
-
-    const collection = {};
-
-    for(
-        let i=0;
-        i<10;
-        i++
-    )
-    {
-        const randomId =
-            ids[
-                Math.floor(
-                    Math.random()
-                    *
-                    ids.length
-                )
-            ];
-
-        collection[
-            randomId
-        ] = true;
-    }
-
-    await set(
-        collectionRef,
-        collection
-    );
-}
-
-async function loadCollection(
-    uid
-)
-{
-    const monstersSnap =
-        await get(
-            ref(
-                db,
-                "monsters"
-            )
-        );
-
-    allMonsters =
-        monstersSnap.val();
-
-    const collectionSnap =
-        await get(
-            ref(
-                db,
-                "users/" +
-                uid +
-                "/collection"
-            )
-        );
-
-    const collection =
-        collectionSnap.val();
-
-    collectionDiv.innerHTML =
+    cards.innerHTML =
         "";
 
-    Object.keys(
-        collection
+    if(!data)
+    {
+        cards.innerHTML =
+        `
+        <div class="empty">
+
+            <h2>
+                ยังไม่มี Monster
+            </h2>
+
+            <br>
+
+            <a href="gacha.html">
+
+                ไปสุ่ม Monster
+
+            </a>
+
+        </div>
+        `;
+
+        return;
+    }
+
+    Object.entries(
+        data
     ).forEach(
-        monsterId =>
+        (
+            [
+                key,
+                monster
+            ]
+        )=>
         {
-            const monster =
-                allMonsters[
-                    monsterId
-                ];
-
-            if(!monster)
-            {
-                return;
-            }
-
-            const card =
-                document
-                .createElement(
-                    "div"
-                );
-
-            card.className =
-                "card";
-
-            card.innerHTML =
+            cards.innerHTML +=
             `
-            <h3>
-            ${monster.name}
-            </h3>
+            <div class="card">
 
-            Element:
-            ${monster.element}
-            <br>
+                <h2>
 
-            Race:
-            ${monster.race}
-            <br><br>
+                    ${monster.name}
 
-            STR:
-            ${monster.str}
-            <br>
+                </h2>
 
-            AGI:
-            ${monster.agi}
-            <br>
+                <div class="stat">
 
-            VIT:
-            ${monster.vit}
-            <br>
+                    Element :
 
-            INT:
-            ${monster.int}
-            <br>
+                    <span
+                        class="element">
 
-            DEX:
-            ${monster.dex}
-            <br>
+                        ${monster.element}
 
-            LUK:
-            ${monster.luk}
+                    </span>
+
+                </div>
+
+                <div class="stat">
+
+                    Race :
+
+                    <span
+                        class="race">
+
+                        ${monster.race}
+
+                    </span>
+
+                </div>
+
+                <hr>
+
+                <div class="stat">
+                    STR :
+                    ${monster.str}
+                </div>
+
+                <div class="stat">
+                    AGI :
+                    ${monster.agi}
+                </div>
+
+                <div class="stat">
+                    VIT :
+                    ${monster.vit}
+                </div>
+
+                <div class="stat">
+                    INT :
+                    ${monster.int}
+                </div>
+
+                <div class="stat">
+                    DEX :
+                    ${monster.dex}
+                </div>
+
+                <div class="stat">
+                    LUK :
+                    ${monster.luk}
+                </div>
+
+                <button
+                    class="deckBtn"
+                    onclick="
+                        addToDeck(
+                            '${key}'
+                        )
+                    ">
+
+                    เพิ่มเข้า Deck
+
+                </button>
+
+            </div>
             `;
-
-            card.onclick =
-            () =>
-            {
-                toggleSelect(
-                    monsterId,
-                    card
-                );
-            };
-
-            collectionDiv
-            .appendChild(
-                card
-            );
         }
     );
-
-    saveDeckBtn.onclick =
-    () =>
-    saveDeck(uid);
 }
 
-function toggleSelect(
-    monsterId,
-    card
+window.addToDeck =
+async function(
+    collectionId
 )
 {
-    const index =
-        selectedDeck.indexOf(
-            monsterId
+    const deckSnapshot =
+        await get(
+            ref(
+                db,
+                "decks/" +
+                currentUser.uid
+            )
         );
 
-    if(index >= 0)
+    const deck =
+        deckSnapshot.val();
+
+    let count = 0;
+
+    if(deck)
     {
-        selectedDeck.splice(
-            index,
-            1
-        );
-
-        card.classList.remove(
-            "selected"
-        );
-    }
-    else
-    {
-        if(
-            selectedDeck.length >= 3
-        )
-        {
-            alert(
-                "Deck Full"
-            );
-
-            return;
-        }
-
-        selectedDeck.push(
-            monsterId
-        );
-
-        card.classList.add(
-            "selected"
-        );
+        count =
+            Object.keys(
+                deck
+            ).length;
     }
 
-    selectedCount.innerText =
-        selectedDeck.length;
-}
-
-async function saveDeck(
-    uid
-)
-{
-    if(
-        selectedDeck.length !== 3
-    )
+    if(count >= 3)
     {
         alert(
-            "Select 3 Monsters"
+            "Deck เต็มแล้ว"
         );
 
         return;
     }
 
+    const monsterSnapshot =
+        await get(
+            ref(
+                db,
+                "collections/" +
+                currentUser.uid +
+                "/" +
+                collectionId
+            )
+        );
+
+    const monster =
+        monsterSnapshot.val();
+
+    const deckRef =
+        push(
+            ref(
+                db,
+                "decks/" +
+                currentUser.uid
+            )
+        );
+
     await set(
-        ref(
-            db,
-            "users/" +
-            uid +
-            "/deck"
-        ),
+        deckRef,
         {
-            slot1:
-                selectedDeck[0],
+            collectionId:
+                collectionId,
 
-            slot2:
-                selectedDeck[1],
+            name:
+                monster.name,
 
-            slot3:
-                selectedDeck[2]
+            element:
+                monster.element,
+
+            race:
+                monster.race,
+
+            str:
+                monster.str,
+
+            agi:
+                monster.agi,
+
+            vit:
+                monster.vit,
+
+            int:
+                monster.int,
+
+            dex:
+                monster.dex,
+
+            luk:
+                monster.luk,
+
+            createdAt:
+                Date.now()
         }
     );
 
     alert(
-        "Deck Saved"
+        monster.name +
+        " ถูกเพิ่มเข้า Deck"
     );
 }
