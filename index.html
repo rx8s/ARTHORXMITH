@@ -1,33 +1,47 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>ARTHORXMITH</title>
 
-    <meta name="description" content="ARTHORXMITH - Monster Card Battle Game">
+    <style>
+        body{
+            font-family: Arial;
+            background:#f5f5f5;
+            text-align:center;
+            padding:50px;
+        }
 
-    <link rel="icon" href="assets/favicon.png">
+        .card{
+            max-width:500px;
+            margin:auto;
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0 0 10px rgba(0,0,0,.1);
+        }
 
-    <link rel="stylesheet" href="css/style.css">
+        img{
+            border-radius:50%;
+        }
 
+        button{
+            padding:10px 20px;
+            cursor:pointer;
+            margin:5px;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- Loading -->
+<div class="card">
 
-    <div id="loadingScreen" class="screen">
-        <h1>ARTHORXMITH</h1>
-        <p>Loading...</p>
-    </div>
+    <h1>ARTHORXMITH</h1>
 
-    <!-- Login -->
+    <div id="guestArea">
 
-    <div id="loginScreen" class="screen hidden">
-
-        <h1>ARTHORXMITH</h1>
+        <p>กรุณาเข้าสู่ระบบ</p>
 
         <button id="loginBtn">
             Login with Google
@@ -35,144 +49,39 @@
 
     </div>
 
-    <!-- Lobby -->
+    <div id="memberArea" style="display:none;">
 
-    <div id="lobbyScreen" class="screen hidden">
+        <img
+            id="avatar"
+            width="100"
+            height="100"
+        >
 
-        <div id="playerInfo">
+        <h2 id="displayName"></h2>
 
-            <img
-                id="playerAvatar"
-                width="64"
-                height="64"
-            >
+        <p id="email"></p>
 
-            <h2 id="playerName"></h2>
+        <p>
+            Level :
+            <span id="level">1</span>
+        </p>
 
-            <div>
-                Lv.
-                <span id="playerLevel">1</span>
-            </div>
+        <p>
+            Gold :
+            <span id="gold">1000</span>
+        </p>
 
-            <div>
-                Gold :
-                <span id="playerGold">0</span>
-            </div>
-
-        </div>
-
-        <hr>
-
-        <button id="btnCollection">
-            Collection
-        </button>
-
-        <button id="btnDeck">
-            Deck Builder
-        </button>
-
-        <button id="btnBattle">
-            Battle
-        </button>
-
-        <button id="btnLogout">
+        <button id="logoutBtn">
             Logout
         </button>
 
     </div>
 
-    <!-- Collection -->
+</div>
 
-    <div id="collectionScreen"
-         class="screen hidden">
-
-        <h2>Collection</h2>
-
-        <div id="cardList"></div>
-
-        <button class="backLobby">
-            Back
-        </button>
-
-    </div>
-
-    <!-- Deck -->
-
-    <div id="deckScreen"
-         class="screen hidden">
-
-        <h2>Deck Builder</h2>
-
-        <div id="deckSlots">
-
-            <div id="slot1"></div>
-            <div id="slot2"></div>
-            <div id="slot3"></div>
-
-        </div>
-
-        <button id="saveDeckBtn">
-            Save Deck
-        </button>
-
-        <button class="backLobby">
-            Back
-        </button>
-
-    </div>
-
-    <!-- Battle -->
-
-    <div id="battleScreen"
-         class="screen hidden">
-
-        <h2>Battle Arena</h2>
-
-        <div id="battleField">
-
-            <div id="playerTeam"></div>
-
-            <div id="enemyTeam"></div>
-
-        </div>
-
-        <div id="battleLog"></div>
-
-        <button id="startBattleBtn">
-            Start Battle
-        </button>
-
-        <button class="backLobby">
-            Back
-        </button>
-
-    </div>
-
-    <!-- Firebase -->
-
-    <script type="module"
-        src="js/firebase.js">
-    </script>
-
-    <script type="module"
-        src="js/auth.js">
-    </script>
-
-    <script type="module"
-        src="js/game.js">
-    </script>
-
-    <script type="module"
-        src="js/battle.js">
-    </script>
-
-    <script type="module"
-        src="js/cards.js">
-    </script>
-
-    <script type="module"
-        src="js/deck.js">
-    </script>
+<script type="module" src="js/firebase.js"></script>
+<script type="module" src="js/firestore.js"></script>
+<script type="module" src="js/auth.js"></script>
 
 </body>
 </html>
