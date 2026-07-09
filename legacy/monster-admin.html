@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Monster Admin</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .monster-card{
+            height:100%;
+        }
+    </style>
+
+
+</head>
+<body>
+
+    <div class="container py-4">
+
+        <h1 class="mb-4">Monster Admin</h1>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+
+                <h5 class="mb-3">Monster Name</h5>
+                <div class="row">
+                    <div class="col-6">
+                        <input id="name" class="form-control" placeholder="Monster Name" value="">
+                    </div>
+                    <div class="col-6">
+                        <input id="img" class="form-control" placeholder="Monster img" value="">
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+
+                    <div class="col-md-6">
+                        <select id="element" class="form-select">
+
+                            <option selected>Neutral</option>
+                            <option>Water</option>
+                            <option>Earth</option>
+                            <option>Fire</option>
+                            <option>Wind</option>
+                            <option>Poison</option>
+                            <option>Holy</option>
+                            <option>Shadow</option>
+                            <option>Ghost</option>
+                            <option>Undead</option>
+
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <select id="race" class="form-select">
+
+                            <option>Formless</option>
+                            <option selected>Undead</option>
+                            <option>Brute</option>
+                            <option>Plant</option>
+                            <option>Insect</option>
+                            <option>Fish</option>
+                            <option>Demon</option>
+                            <option>Demi-Human</option>
+                            <option>Angel</option>
+                            <option>Dragon</option>
+
+                        </select>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+
+                <h5 class="mb-3">Status</h5>
+
+                <div class="row g-2">
+
+                    <div class="col-6 col-md-2">
+                        <input id="str" type="number" class="form-control" placeholder="STR" value="99">
+                    </div>
+
+                    <div class="col-6 col-md-2">
+                        <input id="agi" type="number" class="form-control" placeholder="AGI" value="99">
+                    </div>
+
+                    <div class="col-6 col-md-2">
+                        <input id="vit" type="number" class="form-control" placeholder="VIT" value="99">
+                    </div>
+
+                    <div class="col-6 col-md-2">
+                        <input id="int" type="number" class="form-control" placeholder="INT" value="99">
+                    </div>
+
+                    <div class="col-6 col-md-2">
+                        <input id="dex" type="number" class="form-control" placeholder="DEX" value="99">
+                    </div>
+
+                    <div class="col-6 col-md-2">
+                        <input id="luk" type="number" class="form-control" placeholder="LUK" value="99">
+                    </div>
+
+                </div>
+
+                <div class="mt-4">
+
+                    <button id="saveBtn" class="btn btn-primary"> Create Manual Monster</button>
+
+                    <button id="randomBtn" class="btn btn-success" style="display: none;"> Random Monster</button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-4">
+        <hr>
+
+        <h2 class="mb-3">Monster List</h2>
+
+        <div id="monsterList" class="row g-3" style="display:none;"></div>
+    </div>
+
+    <script type="module" src="js/monsters.js"></script>
+
+</body>
+</html>

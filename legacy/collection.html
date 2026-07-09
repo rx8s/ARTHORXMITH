@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>
+ARTHORXMITH - Collection
+</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:Arial,sans-serif;
+
+    background:#f4f6f9;
+
+    padding:20px;
+}
+
+.container{
+
+    max-width:1400px;
+
+    margin:auto;
+}
+
+.header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+}
+
+.cards{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(
+                320px,
+                1fr
+            )
+        );
+
+    gap:20px;
+}
+
+.card{
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:20px;
+
+    box-shadow:
+        0 0 10px
+        rgba(
+            0,
+            0,
+            0,
+            .1
+        );
+}
+
+.card h2{
+
+    margin-bottom:10px;
+}
+
+.stat{
+
+    margin:5px 0;
+}
+
+.element{
+
+    font-weight:bold;
+
+    color:#0d6efd;
+}
+
+.race{
+
+    font-weight:bold;
+
+    color:#198754;
+}
+
+button{
+
+    padding:10px 15px;
+
+    cursor:pointer;
+
+    border:none;
+
+    border-radius:8px;
+}
+
+.deckBtn{
+
+    margin-top:10px;
+
+    background:#0d6efd;
+
+    color:white;
+}
+
+.empty{
+
+    text-align:center;
+
+    padding:50px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <h1>
+            🎒 Monster Collection
+        </h1>
+
+        <div>
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            |
+
+            <a href="deck.html">
+                My Deck
+            </a>
+
+        </div>
+
+    </div>
+
+    <div
+        id="cards"
+        class="cards">
+
+    </div>
+
+</div>
+
+<script
+    type="module"
+    src="./js/collection.js">
+</script>
+
+</body>
+
+</html>

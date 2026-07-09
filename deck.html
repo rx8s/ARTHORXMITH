@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deck — ARTHORXMITH</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚜️</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header id="app-nav"></header>
+  <main>
+    <h1 class="page-title">🃏 Battle Deck</h1>
+
+    <section class="panel">
+      <div class="row spread">
+        <h2 id="deck-count">Deck (0/5)</h2>
+        <button class="btn btn-primary" id="save-deck" type="button">💾 Save Deck</button>
+      </div>
+      <p class="muted">Your deck fights in this order. Click a card below to add or remove it.</p>
+      <div class="card-grid" id="deck-grid"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Your Collection</h2>
+      <div class="card-grid" id="collection-grid"></div>
+    </section>
+  </main>
+  <script type="module" src="js/pages/deck.js"></script>
+</body>
+</html>

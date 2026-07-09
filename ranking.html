@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ranking — ARTHORXMITH</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚜️</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header id="app-nav"></header>
+  <main>
+    <h1 class="page-title">🏆 Ranking</h1>
+    <section class="panel">
+      <div class="tabs" id="ranking-tabs">
+        <button class="tab active" data-field="wins" type="button">⚔️ Top Wins</button>
+        <button class="tab" data-field="level" type="button">📈 Top Level</button>
+        <button class="tab" data-field="cardsCount" type="button">📚 Top Collection</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Player</th><th id="ranking-metric">Wins</th></tr></thead>
+          <tbody id="ranking-body"></tbody>
+        </table>
+      </div>
+      <p class="muted hidden" id="ranking-empty">No entries yet.</p>
+    </section>
+  </main>
+  <script type="module" src="js/pages/ranking.js"></script>
+</body>
+</html>

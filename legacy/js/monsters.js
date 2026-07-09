@@ -74,7 +74,7 @@ async function createManualMonster()
         dex: Number(document.getElementById("dex").value),
         luk: Number(document.getElementById("luk").value),
         createdAt: Date.now(),
-        img: 'null',
+        img: document.getElementById("img").value,
         hp: randomHp(),
         sp: randomSp(),
         def: random100(),
@@ -83,7 +83,8 @@ async function createManualMonster()
         matk: random100(),
         hit: random100(),
         flee: random100(),
-        crit: random100()
+        crit: random100(),
+        montype: 'mini'
     };
 
     const id = await generateMonsterId();
@@ -122,7 +123,8 @@ async function createRandomMonster()
         matk: random100(),
         hit: random100(),
         flee: random100(),
-        crit: random100()
+        crit: random100(),
+        montype: 'mini'
     };
 
 
@@ -146,40 +148,64 @@ onValue(ref(db,"monsters"),snapshot =>{
     Object.entries( monsters ).forEach(([id,m]) => {
         const div = document.createElement("div");
 
-        div.className = "card";
+        div.className = "col-12 col-md-2";
         div.innerHTML =
         `
-        <img src="${m.img}">
-        <div>
-        ${"⭐️".repeat(m.rank)}
-        </div>
-        <b>${m.name}</b><br>
+            <div class="card monster-card shadow-sm">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col text-center">
+                            <img class="img-fluid" src="${m.img}" style="width:100%; aspect-ratio:1/1; object-fit:contain;">
+                            <span style="font-size: 8px;">${id}</span>
+                            <div>
+                                ${"⭐️".repeat(m.rank)} 
+                                <b>${m.name}</b>
+                            </div>
+                            <div>
+                                ${m.element} / ${m.race}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col">
+                            HP: ${m.hp}<br>
+                        </div>
+                        <div class="col">
+                            SP: ${m.sp}<br>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-6">
+                            STR : ${m.str} <br>
+                            AGI : ${m.agi} <br>
+                            VIT : ${m.vit} <br>
+                            INT : ${m.int} <br>
+                            DEX : ${m.dex} <br>
+                            LUK : ${m.luk} <br>
 
-        ${m.element} / ${m.race}
+                        </div>
+                        <div class="col-6">
+                            Def: ${m.def}<br>
+                            MDef: ${m.mdef}<br>
+                            ATK: ${m.atk}<br>
+                            MATK: ${m.matk}<br>
+                            HIT: ${m.hit}<br>
+                            FLEE: ${m.flee}<br>
+                            CRIT: ${m.crit}<br>
+                        </div>
+                    </div>  
+                    <div class="row mt-2">
+                        <div class="col">
+                            BOSS : ${m.montype === "MVP" ? '<img src="https://ratemyserver.net/images/mob_mvp.gif">' : ''}
+                        </div>
+                    </div>      
+                <br>
 
-        <br><br>
-
-        STR : ${m.str} <br>
-        AGI : ${m.agi} <br>
-        VIT : ${m.vit} <br>
-        INT : ${m.int} <br>
-        DEX : ${m.dex} <br>
-        LUK : ${m.luk} <br>
-
-        HP: ${m.hp}<br>
-        SP: ${m.sp}<br>
-        Def: ${m.def}<br>
-        MDef: ${m.mdef}<br>
-        ATK: ${m.atk}<br>
-        MATK: ${m.matk}<br>
-        HIT: ${m.hit}<br>
-        FLEE: ${m.flee}<br>
-        CRIT: ${m.crit}<br>
-        <br>
-
-        <button data-id="${id}">
-            Delete
-        </button>
+                <button class="btn btn-outline-danger" data-id="${id}">
+                    Delete
+                </button>
+                </div>
+            </div>
         `;
 
         div.querySelector("button").onclick = async () => {
