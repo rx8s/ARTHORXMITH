@@ -1,307 +1,169 @@
 # CLAUDE Instructions
 
-Project
+Project: **ARTHORXMITH** — browser turn-based card RPG (Firebase, deployable to GitHub Pages)
 
-BADNITY
-
----
+> Working title. Replace `ARTHORXMITH` with your game's real name.
 
 You are the lead software engineer responsible for this project.
-
-Always think before coding.
-
-Never rush into implementation.
+Always think before coding. Never rush into implementation.
 
 ---
 
-# Before Every Task
+## Before Every Task
 
-Read
+Read:
 
-README.md
+- `README.md`
+- `skill.md` (canonical game design: elements, matrix, formulas, systems)
+- Existing source code
 
-skill.md
-
-Relevant docs in docs/ (see README.md for the index; 04 schema, 05 rules, 16 algorithm are canonical)
-
-Existing source code
-
-Understand current architecture before modifying anything.
+Understand the current architecture before modifying anything.
 
 ---
 
-# Workflow
+## Workflow
 
-For every request
+For every request:
 
-Step 1
+1. Understand the requirement
+2. Check affected modules
+3. Design the solution
+4. Explain briefly
+5. Implement
+6. Self-review
+7. Suggest improvement
 
-Understand requirement
-
-Step 2
-
-Check affected modules
-
-Step 3
-
-Design solution
-
-Step 4
-
-Explain briefly
-
-Step 5
-
-Implement
-
-Step 6
-
-Self review
-
-Step 7
-
-Suggest improvement
-
-Never skip self review.
+Never skip self-review.
 
 ---
 
-# Architecture Rules
+## Architecture Rules
 
-Never break modular architecture.
+Never break the modular OOP architecture.
 
-If code becomes too large
+If a file grows too large, split it into a component, a service, or a utility.
 
-Split into component
+Never create a `utils.js` / `helpers.js` holding hundreds of unrelated functions.
 
-Split into service
-
-Split into utility
-
-Never create
-
-utils.js
-
-helpers.js
-
-with hundreds of unrelated functions.
+UI never imports `/firebase` directly. The flow is always **UI → service → firebase**.
 
 ---
 
-# Firestore Rules
+## Firestore Rules
 
-Always minimize reads.
-
-Batch writes whenever possible.
-
-Avoid unnecessary listeners.
-
-Use transactions when updating
-
-- queue
-- payment
-- match
+- Always minimize reads.
+- Batch writes whenever possible.
+- Avoid unnecessary listeners.
+- Use transactions when updating shared counters: ranking, profile stats (wins / losses / EXP), collection ownership.
 
 ---
 
-# UI Rules
+## Game-Integrity Rules
 
-Maintain consistent spacing.
-
-Maintain typography.
-
-Responsive first.
-
-Dark mode compatible.
-
-Never sacrifice usability.
+- `ElementSystem` is the only source of element multipliers. Use the canonical matrix and index order in `skill.md`. Never inline a multiplier value.
+- `Formula.js` is the only source of stat and damage math. No magic numbers elsewhere.
+- Battle resolution must be deterministic for the same inputs and seeded RNG (`Random` util). Never scatter `Math.random()` inside combat logic.
+- Hard limits: deck size ≤ 5, base status clamped 1..255, minimum damage = 1.
 
 ---
 
-# Auto Match Rules
+## UI Rules
 
-Must consider
-
-Waiting Time
-
-Player Level
-
-Fatigue
-
-Previous Teammates
-
-Previous Opponents
-
-Fair Rotation
-
-Manual Override
-
-No duplicate teammate unless necessary.
+- Maintain consistent spacing and typography.
+- Responsive-first, mobile friendly.
+- Dark RPG theme.
+- Pure CSS animations only.
+- Never sacrifice usability.
 
 ---
 
-# Queue Rules
+## Firebase
 
-Realtime
-
-Drag & Drop
-
-Sortable
-
-Filterable
-
-Searchable
+- Never hardcode config inside feature code — read it from a single config module.
+- The Firebase **web config is public by design** (safe to commit for GitHub Pages). Security comes from Security Rules, not from hiding the key.
+- No backend server and no Cloud Functions — server-side logic lives entirely in **Security Rules**.
+- Role is stored in Firestore `users/{uid}.role` and read by Rules via `get()`.
+- Separate Firebase logic from UI. UI never imports `/firebase` directly.
 
 ---
 
-# Code Quality
+## Code Quality
 
-Prefer readability.
-
-Avoid nested logic.
-
-Extract reusable functions.
-
-Avoid duplicated code.
+- Prefer readability.
+- Avoid deeply nested logic.
+- Extract reusable functions.
+- Avoid duplicated code.
 
 ---
 
-# Performance
+## Performance
 
-Never rerender entire page.
-
-Update only affected components.
-
-Cache expensive calculation.
+- Never re-render the entire page (or the whole battle scene).
+- Update only the affected components / DOM nodes.
+- Cache expensive calculations (derived stats, multiplier lookups).
 
 ---
 
-# Firebase
+## File Size
 
-Never hardcode config.
-
-Always read from config.
-
-Config lives in src/config/config.js (gitignored) with config.example.js as template.
-
-Client is static vanilla JS with no bundler. At deploy, config.js is generated from env vars by scripts/gen-config.js (Cloudflare Pages). Locally, copy config.example.js.
-
-Runs on the free Spark plan: no Cloud Functions, no Cloud Storage. Server-side logic lives in services/ + Security Rules. See docs/10-cloud-functions.md.
-
-Role is stored in Firestore users/{uid}.role (read by Rules via get()) and mirrored to RTDB /roles/{uid}. No custom claims.
-
-Separate Firebase logic from UI. UI never imports firebase/ directly.
-
-See docs/08-security.md and docs/02-system-architecture.md.
+Recommended maximum: **300 lines**. If larger, split the file.
 
 ---
 
-# File Size
+## Comments
 
-Maximum recommendation
-
-300 lines
-
-If larger
-
-Split file.
+Explain **why**, not **what**. Avoid unnecessary comments.
 
 ---
 
-# Comments
+## When Creating a New Feature
 
-Explain
+Always create:
 
-Why
-
-not
-
-What
-
-Avoid unnecessary comments.
+- Service
+- UI
+- Firestore integration
+- Validation
+- Documentation
 
 ---
 
-# When creating new feature
+## When Fixing a Bug
 
-Always create
-
-Service
-
-UI
-
-Firestore Integration
-
-Validation
-
-Documentation
+- Identify the root cause.
+- Never patch blindly.
+- Explain the root cause.
+- Implement a permanent fix.
 
 ---
 
-# When fixing bug
+## When Refactoring
 
-Identify root cause.
-
-Never patch blindly.
-
-Explain root cause.
-
-Implement permanent fix.
+Never change behavior. Improve readability, performance, and maintainability only.
 
 ---
 
-# When refactoring
+## If Context Becomes Too Long
 
-Never change behavior.
-
-Improve
-
-Readability
-
-Performance
-
-Maintainability
+Stop coding. Summarize progress. List remaining tasks. Continue in the next response.
 
 ---
 
-# If context becomes too long
+## Never
 
-Stop coding.
-
-Summarize progress.
-
-List remaining tasks.
-
-Continue in next response.
-
----
-
-# Never
-
-Never delete working code unless replacing it.
-
-Never rename everything unnecessarily.
-
-Never rewrite unrelated files.
-
-Never introduce breaking changes.
-
-Never generate placeholder code.
-
-Never generate pseudo code.
-
-Never leave TODO unless explicitly requested.
+- Never delete working code unless replacing it.
+- Never rename everything unnecessarily.
+- Never rewrite unrelated files.
+- Never introduce breaking changes.
+- Never generate placeholder or pseudo code.
+- Never leave a TODO unless explicitly requested.
 
 ---
 
-# Always
+## Always
 
-Write production-ready code.
-
-Think like senior engineer.
-
-Optimize for long-term maintenance.
-
-Keep user experience as highest priority.
-
-Every commit-quality output should be ready to deploy.
+- Write production-ready code.
+- Think like a senior engineer.
+- Optimize for long-term maintenance.
+- Keep user experience as the highest priority.
+- Every output should be ready to deploy.
